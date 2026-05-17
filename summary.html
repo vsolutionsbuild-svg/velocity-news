@@ -179,7 +179,7 @@ body::before {
   font-size: 10px;
   letter-spacing: 0.12em;
   color: var(--dim);
-  margin-bottom: 48px;
+  margin-bottom: 32px;
 }
 
 .title-rule {
@@ -188,6 +188,102 @@ body::before {
   margin-bottom: 48px;
   opacity: 0.3;
 }
+
+/* ── AUDIO PLAYER ── */
+.audio-player {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  margin-bottom: 40px;
+}
+.player-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.play-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.play-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--accent);
+  transform: scale(0);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.play-btn:hover::before { transform: scale(1); }
+.play-btn:hover { color: var(--bg); }
+.play-btn .icon { position: relative; z-index: 1; }
+.player-info { flex: 1; }
+.player-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.player-status {
+  font-size: 13px;
+  color: var(--text);
+}
+.loading-spinner {
+  display: none;
+  width: 16px; height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.progress-wrap {
+  width: 100%;
+  height: 3px;
+  background: rgba(200,146,10,0.12);
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.3s linear;
+  pointer-events: none;
+}
+.player-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.speed-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.speed-btn:hover, .speed-btn.active { color: var(--accent); border-color: var(--accent); }
 
 /* ── THEME SECTIONS ── */
 .themes { display: flex; flex-direction: column; gap: 0; }
@@ -232,7 +328,6 @@ body::before {
   padding-top: 40px;
   border-top: 1px solid var(--border);
 }
-
 .sources-label {
   font-family: var(--mono);
   font-size: 9px;
@@ -241,14 +336,12 @@ body::before {
   color: var(--dim);
   margin-bottom: 20px;
 }
-
 .sources-list {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .sources-list li {
   font-size: 13px;
   color: var(--dim);
@@ -270,7 +363,6 @@ body::before {
   color: var(--dim);
   margin-top: 16px;
 }
-
 .empty-state {
   text-align: center;
   padding: 80px 20px;
@@ -341,7 +433,7 @@ body::before {
 
 @media (max-width: 720px) {
   .topnav-link { font-size: 10px; letter-spacing: 0; padding: 0 2px; }
- .topnav-contact { display: block !important; font-size: 8px; letter-spacing: 0.05em; padding: 8px 4px; }
+  .topnav-contact { display: block !important; font-size: 8px; letter-spacing: 0.05em; padding: 8px 4px; }
   .layout { padding: 32px 20px 64px; margin-top: 88px; }
 }
 </style>
@@ -379,18 +471,27 @@ body::before {
 </div>
 
 <div class="layout">
-
   <div id="content">
     <div class="loading-state">
       <div class="spinner"></div>
       <p>Loading summary...</p>
     </div>
   </div>
-
 </div>
 
 <script>
 const SUMMARY_URL = '/summary.json';
+
+// ── AUDIO STATE ──
+let audioContext = null;
+let audioSource = null;
+let audioBuffer = null;
+let isPlaying = false;
+let isPaused = false;
+let pauseOffset = 0;
+let startTime = 0;
+let playbackRate = 1.0;
+let progressTimer = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await loadSummary();
@@ -411,12 +512,38 @@ function renderSummary(data) {
   const themes = data.themes || [];
   const sources = data.sources || [];
   const updated = data.updated || '';
+  const mp3Url = data.mp3_url || '';
 
   document.getElementById('content').innerHTML = `
-    <div class="page-eyebrow">AI in Construction · Running Resource</div>
+    <div class="page-eyebrow">AI in Construction · Daily Summary</div>
     <h1 class="page-title">What AI Is Actually Doing in Construction</h1>
-    <p class="page-sub">A continuously updated synthesis of every development this site has covered — organized by theme, not by date.</p>
-    <div class="updated-line">Last updated: ${updated} · Updated every Monday at 4:00 AM</div>
+    <p class="page-sub">A daily synthesis of AI developments in construction — focused on what matters most to contractors managing projects, crews, and margins.</p>
+    <div class="updated-line">Last updated: ${updated} · Updated daily at 4:30 AM</div>
+
+    <div class="audio-player" id="audioPlayer">
+      <div class="player-top">
+        <button class="play-btn" id="playBtn" onclick="toggleAudio()">
+          <span class="icon" id="playIcon">▶</span>
+        </button>
+        <div class="player-info">
+          <div class="player-label">Listen to today's summary</div>
+          <div class="player-status" id="playerStatus">Press play to listen</div>
+        </div>
+        <div class="loading-spinner" id="loadingSpinner"></div>
+      </div>
+      <div class="progress-wrap" id="progressWrap" onclick="seekAudio(event)">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="player-controls">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;">SPEED</span>
+        <button class="speed-btn" onclick="setRate(0.8)">0.8×</button>
+        <button class="speed-btn active" onclick="setRate(1.0)">1.0×</button>
+        <button class="speed-btn" onclick="setRate(1.25)">1.25×</button>
+        <button class="speed-btn" onclick="setRate(1.5)">1.5×</button>
+      </div>
+    </div>
+    <div id="mp3Url" style="display:none;" data-url="${mp3Url}"></div>
+
     <div class="title-rule"></div>
 
     <div class="themes">
@@ -449,12 +576,12 @@ function renderSummary(data) {
 
 function renderEmpty() {
   document.getElementById('content').innerHTML = `
-    <div class="page-eyebrow">AI in Construction · Running Resource</div>
+    <div class="page-eyebrow">AI in Construction · Daily Summary</div>
     <h1 class="page-title">What AI Is Actually Doing in Construction</h1>
     <div class="title-rule"></div>
     <div class="empty-state">
-      <h2>First summary coming Monday.</h2>
-      <p>This page synthesizes everything the Daily News has covered into one running resource, organized by theme. It updates automatically every Monday at 4:00 AM.</p>
+      <h2>First summary coming tomorrow.</h2>
+      <p>This page synthesizes the Daily News into a contractor-focused briefing every morning at 4:30 AM.</p>
       <p style="margin-top: 16px;">In the meantime, read the <a href="news.html" style="color: var(--accent);">Daily News</a>.</p>
     </div>
     <div class="doc-footer">
@@ -462,6 +589,107 @@ function renderEmpty() {
       <span>velocitysolutions.build</span>
     </div>
   `;
+}
+
+// ── AUDIO FUNCTIONS ──
+function playAudioBuffer(offset = 0) {
+  if (!audioBuffer || !audioContext) return;
+  if (audioSource) { audioSource.disconnect(); audioSource = null; }
+  audioSource = audioContext.createBufferSource();
+  audioSource.buffer = audioBuffer;
+  audioSource.playbackRate.value = playbackRate;
+  audioSource.connect(audioContext.destination);
+  audioSource.start(0, offset);
+  startTime = audioContext.currentTime - offset;
+  isPlaying = true; isPaused = false;
+  document.getElementById('playIcon').textContent = '⏸';
+  document.getElementById('playerStatus').textContent = 'Playing...';
+  audioSource.onended = () => {
+    if (isPlaying) {
+      isPlaying = false;
+      document.getElementById('playIcon').textContent = '▶';
+      document.getElementById('playerStatus').textContent = 'Finished';
+      document.getElementById('progressFill').style.width = '100%';
+      clearInterval(progressTimer);
+    }
+  };
+  startProgressTimer();
+}
+
+function startProgressTimer() {
+  clearInterval(progressTimer);
+  progressTimer = setInterval(() => {
+    if (!isPlaying || !audioBuffer) return;
+    const elapsed = audioContext.currentTime - startTime;
+    const pct = Math.min((elapsed / audioBuffer.duration) * 100, 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    const remaining = audioBuffer.duration - elapsed;
+    const mins = Math.floor(remaining / 60);
+    const secs = Math.floor(remaining % 60);
+    document.getElementById('playerStatus').textContent =
+      mins > 0 ? `${mins}m ${secs}s remaining` : `${secs}s remaining`;
+  }, 500);
+}
+
+async function toggleAudio() {
+  if (audioContext && audioContext.state === 'suspended') await audioContext.resume();
+
+  if (!audioBuffer) {
+    const mp3El = document.getElementById('mp3Url');
+    const mp3Url = mp3El ? mp3El.dataset.url : '';
+    if (!mp3Url) {
+      document.getElementById('playerStatus').textContent = 'Audio not available yet';
+      return;
+    }
+    document.getElementById('playerStatus').textContent = 'Loading audio...';
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('playIcon').textContent = '...';
+    try {
+      const res = await fetch(mp3Url);
+      const arrayBuffer = await res.arrayBuffer();
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      document.getElementById('loadingSpinner').style.display = 'none';
+      playAudioBuffer(0);
+    } catch(e) {
+      document.getElementById('loadingSpinner').style.display = 'none';
+      document.getElementById('playerStatus').textContent = 'Audio unavailable';
+      document.getElementById('playIcon').textContent = '▶';
+    }
+  } else if (isPlaying) {
+    pauseOffset = audioContext.currentTime - startTime;
+    audioSource.stop(); audioSource = null;
+    isPlaying = false; isPaused = true;
+    clearInterval(progressTimer);
+    document.getElementById('playIcon').textContent = '▶';
+    document.getElementById('playerStatus').textContent = 'Paused';
+  } else if (isPaused) {
+    playAudioBuffer(pauseOffset);
+  } else {
+    playAudioBuffer(0);
+  }
+}
+
+async function seekAudio(e) {
+  if (!audioBuffer) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  const offset = pct * audioBuffer.duration;
+  if (isPlaying || isPaused) {
+    if (audioSource) { try { audioSource.stop(); } catch(e) {} }
+    isPlaying = false; isPaused = false;
+    playAudioBuffer(offset);
+  }
+}
+
+function setRate(r) {
+  playbackRate = r;
+  document.querySelectorAll('.speed-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === r + '×' || b.textContent === r.toFixed(1) + '×');
+  });
+  if (isPlaying && audioSource) {
+    audioSource.playbackRate.value = r;
+  }
 }
 
 // Modal

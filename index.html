@@ -108,7 +108,7 @@ body::before {
 /* Row 2: page nav links — always visible, full width, 4 equal columns */
 .topnav-row2 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   height: 40px;
 }
 
@@ -561,6 +561,7 @@ h4.subsubsection {
 }
 
 @media (max-width: 720px) {
+  .topnav-contact { display: block !important; font-size: 9px; letter-spacing: 0.06em; }
   .sidebar {
     transform: translateX(-100%);
   }
@@ -573,7 +574,6 @@ h4.subsubsection {
     padding: 32px 20px 64px;
   }
   .hamburger { display: flex; }
-  .topnav-contact { display: none; }
 
   /* stat cards go full-width stacked on mobile */
   .stat-card {
@@ -634,6 +634,7 @@ h4.subsubsection {
     <a href="news.html" class="topnav-link">Daily News</a>
     <a href="summary.html" class="topnav-link">Live Summary</a>
     <a href="#" class="topnav-link" onclick="showComingSoon('Services'); return false;">Services</a>
+    <a href="mailto:contact@velocitysolutions.build" class="topnav-link">Contact</a>
   </div>
 </nav>
 

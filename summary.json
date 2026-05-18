@@ -1,0 +1,29 @@
+{
+  "updated": "May 18 2026",
+  "mp3_url": "https://raw.githubusercontent.com/vsolutionsbuild-svg/velocity-news/main/summary.mp3",
+  "themes": [
+    {
+      "title": "Funding & Investment",
+      "body": "Bedrock Robotics closed a $270 million Series B in February 2026, bringing total funding to over $350 million. The round was co-led by CapitalG and the Valor Atreides AI Fund, with participation from NVIDIA's venture arm NVentures, Tishman Speyer, and 8VC. The company was founded in 2024 by engineers from Waymo's autonomous vehicle program and is applying the same sensor fusion and machine learning architecture to heavy construction equipment. The capital is specifically targeted at deploying fully operator-less excavators in 2026. The broader autonomous construction equipment market is projected to reach $18.16 billion by end of year, growing at over 9 percent annually. For subcontractors and GCs watching this space, the fundraising signals that production-scale autonomous equipment is closer than pilot programs suggest."
+    },
+    {
+      "title": "Autonomous Equipment",
+      "body": "Bedrock Robotics is targeting its first fully operator-less excavator deployments in 2026 using the Bedrock Operator \u2014 a lidar, GPS, and motion sensor package that retrofits existing machines. Caterpillar announced at CES 2026 that it is developing autonomous excavators, dozers, and compactors capable of performing trenching, grading, and surface preparation without a human in the cab. For specialty subcontractors doing earthwork, utilities, or site prep, the near-term implication is not elimination of operators but a shift in how equipment is staffed and monitored. Regulatory and insurance frameworks for operator-less equipment on active job sites are not yet defined \u2014 a real exposure for early adopters signing fixed-price subcontracts."
+    },
+    {
+      "title": "Administrative Automation",
+      "body": "AI-driven cost estimation systems are achieving 85 to 90 percent accuracy compared to manually prepared estimates. For subcontractors and GCs working on thin bid margins, a one-percent error on a five-million-dollar subcontract is fifty thousand dollars. Computer vision safety platforms are delivering measurable results: CompScience reports a 35 percent reduction in incidents; broader industry figures for mature deployments suggest 40 to 50 percent reductions. Fewer incidents translate directly into workers' comp claims, EMR scores, and insurance premiums \u2014 costs that hit specialty contractors harder than large GCs. Alpha Vision debuted an AI safety agent at ENR Future Tech 2026 in April."
+    },
+    {
+      "title": "Adoption Data",
+      "body": "Thirty-eight percent of contractors now report measurable business impact from AI tools, up from 17 percent one year ago \u2014 a doubling in documented results within a single year. Nearly half of construction professionals use AI tools daily. The flip side: roughly half of all construction companies have no AI deployment at all, despite expressing interest. Barriers include high upfront costs, limited internal technical expertise, and regulatory fragmentation. The market is splitting into firms with measurable AI traction and firms that remain interested but undeployed \u2014 and the gap is widening as early adopters compound gains from better estimates, safer sites, and lower overhead."
+    },
+    {
+      "title": "Labor & Workforce",
+      "body": "The U.S. construction industry needs between 439,000 and 500,000 additional workers in 2026 alone, per the Associated Builders and Contractors and ITIF. The shortage is intensifying due to a data center construction boom, where spending is expected to grow 17 to 20 percent this year. Approximately 41 percent of the current construction workforce is expected to retire by 2031. For regional GCs and specialty subcontractors, the practical consequences are upward pressure on labor costs, increased competition for skilled tradespeople, and longer lead times on subcontractor bids. Firms investing in productivity tools \u2014 scheduling AI, autonomous equipment, prefabrication \u2014 are gaining a structural cost advantage."
+    }
+  ],
+  "sources": [
+    "Autonomous Excavators, AI Safety Systems, and a Half-Million Worker Gap: Construction's Technology Reckoning \u2014 May 18, 2026"
+  ]
+}

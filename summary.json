@@ -1,30 +1,27 @@
 {
-  "updated": "May 19 2026",
+  "updated": "May 18 2026",
   "mp3_url": "https://raw.githubusercontent.com/vsolutionsbuild-svg/velocity-news/main/summary.mp3",
-  "themes": [
+  "questions": [
     {
-      "title": "Funding & Investment",
-      "body": "Xpanner disclosed an $18 million Series B bridge round led by Korea Investment Partners. The company generated $21 million in revenue in 2025, up from $7 million in 2024, and is now profitable. Its X1 Kit retrofits existing equipment with automation through a subscription model, targeting solar, battery storage, and data center construction. Nineteen of the top 20 U.S. solar farm EPCs are active or completed customers. Bedrock Robotics closed a $270 million Series B in February 2026, bringing total funding past $350 million. Investors include CapitalG, Valor Atreides AI Fund, NVIDIA's NVentures, Tishman Speyer, and MIT. The founding team comes from Waymo's autonomous vehicle program. The autonomous construction equipment market is projected to reach $18.16 billion by end of 2026, growing above 9 percent annually."
+      "question": "What AI tools and software are available right now that a specialty contractor or small GC can actually use?",
+      "answer": "First full summary generating tonight."
     },
     {
-      "title": "Autonomous Equipment",
-      "body": "Bedrock Robotics is targeting its first fully operator-less excavator deployments in 2026. Its Bedrock Operator system uses lidar, GPS, and motion sensors to retrofit existing excavators \u2014 no fleet replacement required. Autonomous excavator operation requires managing complex arm movements across unpredictable terrain, substantially harder than highway driving. Caterpillar announced autonomous excavators, dozers, and compactors at CES 2026 capable of trenching, grading, and surface preparation without a human operator. Xpanner's X1 Kit offers subscription-based automation retrofits rather than full autonomy, deployed primarily on solar and data center sites. For regional GCs and subcontractors, the near-term implication is equipment with assisted or semi-autonomous capabilities \u2014 full operator-less operation remains a 2026 target, not a current reality."
+      "question": "What are contractors actually doing with AI and what measurable results are they getting?",
+      "answer": "First full summary generating tonight."
     },
     {
-      "title": "Administrative Automation",
-      "body": "Schedule overruns cost the global construction industry $1.6 trillion in 2024, with large projects averaging 20 percent over schedule. AI scheduling tools address this directly. ALICE Technologies generates thousands of valid schedule permutations against project constraints. nPlan uses completed project data to flag timelines statistically resembling historical overruns. Buildots connects 360-degree camera footage from superintendents to the live project schedule. Contractors report 17 to 30 percent reductions in schedule overruns \u2014 material for subcontractors with liquidated damages exposure. AI cost estimation is achieving 85 to 90 percent accuracy versus manually prepared estimates. Bentley Systems is rolling out Bentley Copilot, an AI assistant embedded in project management workflows. Integration complexity and change management resistance remain the primary adoption barriers at mid-market contractors."
+      "question": "What is coming in the next 6-12 months that specialty subs and small GCs should be preparing for?",
+      "answer": "First full summary generating tonight."
     },
     {
-      "title": "Adoption Data",
-      "body": "Thirty-eight percent of contractors now report measurable business impact from AI, up from 17 percent a year ago. Nearly half of construction professionals use AI tools daily. AI cost estimation systems are achieving 85 to 90 percent accuracy. Despite this, approximately half of all construction companies have zero AI deployment. Primary barriers are upfront costs, limited in-house technical expertise, and regulatory fragmentation. For smaller contractors and specialty subcontractors, a failed AI pilot is a material cost, which creates adoption risk aversion. Only 27.3 percent of workers report familiarity with location-tracking wearables \u2014 worker resistance is a documented implementation barrier for job site monitoring systems."
+      "question": "What do GC and owner clients already know about AI - what are they expecting from their subs?",
+      "answer": "First full summary generating tonight."
     },
     {
-      "title": "Labor & Workforce",
-      "body": "The U.S. construction industry needs an estimated 439,000 to 500,000 additional workers in 2026 alone. Approximately 41 percent of the existing workforce is expected to retire by 2031, and trade pipeline entry has not kept pace. Data center construction spending is growing 17 to 20 percent this year, adding demand to an already short labor pool. Computer vision safety systems are producing documented results. CompScience reports a 35 percent incident reduction among platform users; firms with mature deployments report 40 to 50 percent reductions. These systems flag PPE violations, unauthorized zone entry, and fall hazards using continuous camera monitoring. GPS wearables face worker opposition on privacy grounds, and camera-based systems raise data governance questions subcontractors and GCs must address before deploying."
+      "question": "What does adoption actually cost and what is the ROI for a specialty sub or small GC?",
+      "answer": "First full summary generating tonight."
     }
   ],
-  "sources": [
-    "Construction Meets Its Own Technology Moment: AI Scheduling, Prefab Factories, and the Data Center Build-Out - May 19 2026",
-    "Autonomous Excavators, AI Safety Systems, and a Half-Million Worker Gap: Construction's Technology Reckoning - May 18 2026"
-  ]
+  "sources": []
 }

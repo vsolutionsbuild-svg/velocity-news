@@ -600,7 +600,7 @@ async function getRecommendations(refinement = null) {
   `;
 
   try {
-    const insightsContext = insightsData ? JSON.stringify(insightsData).substring(0, 40000) : 'No insights data available.';
+    const insightsContext = insightsData ? JSON.stringify(insightsData).substring(0, 8000) : 'No insights data available.';
 
     const userContext = `
 Contractor Profile:

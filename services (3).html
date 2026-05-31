@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Stack — Velocity Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Work+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5EW3H2XBGX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5EW3H2XBGX');
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f0e0b;
+  --bg2: #161410;
+  --surface: #1a1814;
+  --surface2: #201e19;
+  --accent: #c8920a;
+  --accent2: #8b6410;
+  --text: #ede5d0;
+  --muted: #a89270;
+  --dim: #6b5e48;
+  --border: rgba(200,146,10,0.16);
+  --border2: rgba(200,146,10,0.08);
+  --green: #4caf82;
+  --head: 'Cormorant Garamond', serif;
+  --body: 'Work Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: repeating-linear-gradient(
+    -52deg, transparent, transparent 28px,
+    rgba(200,146,10,0.028) 28px, rgba(200,146,10,0.028) 29px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+.topnav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(15,14,11,0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+.topnav-row1 {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; height: 48px;
+  border-bottom: 1px solid rgba(200,146,10,0.08);
+}
+.topnav-logo { font-family: var(--head); font-size: 18px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent); text-decoration: none; text-shadow: 0 0 30px rgba(200,146,10,0.3); }
+.topnav-contact { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.topnav-contact:hover { color: var(--accent); }
+.topnav-row2 { display: grid; grid-template-columns: repeat(5, 1fr); height: 40px; }
+.topnav-link {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--body); font-size: 12px; color: var(--muted);
+  text-decoration: none; letter-spacing: 0.04em;
+  border-right: 1px solid rgba(200,146,10,0.08);
+  transition: all 0.2s; background: none;
+  border-top: none; border-bottom: none; border-left: none;
+  padding: 0 4px; text-align: center; cursor: pointer;
+}
+.topnav-link:last-child { border-right: none; }
+.topnav-link:hover { color: var(--text); background: rgba(200,146,10,0.04); }
+.topnav-link.active { color: var(--accent); background: rgba(200,146,10,0.06); box-shadow: inset 0 -2px 0 var(--accent); }
+
+/* LAYOUT */
+.layout {
+  margin-top: 88px;
+  min-height: calc(100vh - 88px);
+  position: relative; z-index: 1;
+  max-width: 860px;
+  margin-left: auto; margin-right: auto;
+  padding: 56px 48px 80px;
+}
+
+/* HERO */
+.page-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; opacity: 0.7; }
+.page-title { font-family: var(--head); font-size: clamp(36px, 5vw, 56px); font-weight: 400; line-height: 1.05; color: var(--text); margin-bottom: 16px; }
+.page-sub { font-size: 15px; line-height: 1.75; color: var(--muted); max-width: 560px; margin-bottom: 48px; }
+.title-rule { height: 1px; background: linear-gradient(90deg, var(--accent), transparent); margin-bottom: 48px; opacity: 0.3; }
+
+/* STEP INDICATOR */
+.step-indicator {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 40px;
+}
+.step {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--dim);
+  transition: color 0.3s;
+}
+.step.active { color: var(--accent); }
+.step.complete { color: var(--green); }
+.step-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid var(--dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; transition: all 0.3s;
+}
+.step.active .step-num { border-color: var(--accent); color: var(--accent); background: rgba(200,146,10,0.08); }
+.step.complete .step-num { border-color: var(--green); color: var(--green); background: rgba(76,175,130,0.08); }
+.step-line { flex: 1; height: 1px; background: var(--border2); margin: 0 12px; max-width: 48px; }
+
+/* FORM CARD */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  padding: 40px 44px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.4s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.form-section-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--accent); opacity: 0.7;
+  margin-bottom: 8px;
+}
+.form-section-title {
+  font-family: var(--head); font-size: 26px; font-weight: 400;
+  color: var(--text); margin-bottom: 28px; line-height: 1.2;
+}
+
+/* QUESTIONS */
+.question-block { margin-bottom: 28px; }
+.question-label {
+  font-size: 14px; font-weight: 500; color: var(--text);
+  margin-bottom: 12px; line-height: 1.5;
+}
+.question-num {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  color: var(--accent); opacity: 0.6; margin-right: 8px;
+}
+.option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.option-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.option-btn {
+  padding: 10px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  font-family: var(--body); font-size: 13px;
+  cursor: pointer; text-align: left;
+  transition: all 0.15s;
+  touch-action: manipulation;
+  line-height: 1.3;
+}
+.option-btn:hover { border-color: var(--accent); color: var(--text); background: rgba(200,146,10,0.04); }
+.option-btn.selected { border-color: var(--accent); color: var(--accent); background: rgba(200,146,10,0.08); }
+.option-btn.multi.selected { border-color: var(--accent); color: var(--accent); background: rgba(200,146,10,0.08); }
+.option-btn.multi.selected::before { content: '✓ '; }
+
+/* COMMENTS */
+.comments-area {
+  width: 100%; min-height: 80px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text); font-family: var(--body); font-size: 14px;
+  padding: 12px 16px; resize: vertical; outline: none;
+  transition: border-color 0.2s; line-height: 1.6;
+}
+.comments-area:focus { border-color: var(--accent); }
+.comments-area::placeholder { color: var(--dim); }
+
+/* EMAIL FORM */
+.email-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.input-wrap { display: flex; flex-direction: column; gap: 6px; }
+.input-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.text-input {
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text); font-family: var(--body); font-size: 14px;
+  padding: 10px 14px; outline: none; transition: border-color 0.2s;
+  width: 100%;
+}
+.text-input:focus { border-color: var(--accent); }
+.text-input::placeholder { color: var(--dim); }
+.text-input.error { border-color: #e05c5c; }
+
+.consent-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+.consent-check { width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+.consent-label { font-size: 13px; color: var(--muted); line-height: 1.6; cursor: pointer; }
+.consent-label a { color: var(--accent); text-decoration: none; }
+
+/* BUTTONS */
+.btn-primary {
+  padding: 14px 32px;
+  background: var(--accent);
+  border: none; color: var(--bg);
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+  touch-action: manipulation;
+}
+.btn-primary:hover { background: #d9a020; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-secondary {
+  padding: 14px 32px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+  touch-action: manipulation;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+/* LOADING */
+.loading-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  padding: 60px 44px; text-align: center;
+  animation: fadeUp 0.4s ease both;
+}
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 24px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title { font-family: var(--head); font-size: 28px; font-weight: 400; color: var(--text); margin-bottom: 12px; }
+.loading-sub { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+
+/* RESULTS */
+.results-header { margin-bottom: 32px; }
+.results-title { font-family: var(--head); font-size: 32px; font-weight: 400; color: var(--text); margin-bottom: 8px; }
+.results-sub { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.refinements-left {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--dim);
+  display: inline-block; margin-top: 8px;
+}
+.refinements-left span { color: var(--accent); }
+
+/* RUNS REMAINING BADGE */
+.runs-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--dim);
+  background: rgba(200,146,10,0.06);
+  border: 1px solid var(--border2);
+  padding: 6px 12px; margin-bottom: 24px;
+}
+.runs-badge span { color: var(--accent); }
+.runs-badge.warning { color: #e08c3c; border-color: rgba(224,140,60,0.3); background: rgba(224,140,60,0.06); }
+.runs-badge.warning span { color: #e08c3c; }
+
+.category-block { margin-bottom: 40px; }
+.category-header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.category-eyebrow { font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); opacity: 0.7; margin-bottom: 6px; }
+.category-name { font-family: var(--head); font-size: 24px; font-weight: 400; color: var(--text); }
+
+.tool-rec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px 24px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.tool-rec-card.top-pick { border-top: 2px solid var(--accent); }
+.tool-rank {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--dim); margin-bottom: 6px;
+}
+.tool-rank-top { color: var(--accent); }
+.tool-rec-name { font-family: var(--head); font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.tool-rec-company { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); opacity: 0.7; margin-bottom: 10px; }
+.tool-rec-pricing {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--green); margin-bottom: 10px;
+}
+.tool-rec-why { font-size: 14px; line-height: 1.75; color: var(--muted); margin-bottom: 10px; }
+.tool-also-covers {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  color: var(--dim); padding: 6px 12px;
+  background: rgba(200,146,10,0.04);
+  border-left: 2px solid var(--border);
+  display: inline-block;
+}
+.tool-also-covers span { color: var(--muted); }
+
+/* REFINE */
+.refine-card {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  padding: 28px 32px;
+  margin-top: 32px;
+}
+.refine-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); opacity: 0.7; margin-bottom: 8px; }
+.refine-title { font-family: var(--head); font-size: 20px; font-weight: 400; color: var(--text); margin-bottom: 16px; }
+.refine-input {
+  width: 100%; background: var(--bg);
+  border: 1px solid var(--border2); color: var(--text);
+  font-family: var(--body); font-size: 14px;
+  padding: 12px 16px; outline: none;
+  transition: border-color 0.2s; margin-bottom: 12px;
+  resize: none; min-height: 60px;
+}
+.refine-input:focus { border-color: var(--accent); }
+.refine-input::placeholder { color: var(--dim); }
+.refine-examples {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+}
+.refine-example {
+  padding: 6px 12px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--dim); font-size: 12px; cursor: pointer;
+  transition: all 0.15s; touch-action: manipulation;
+}
+.refine-example:hover { border-color: var(--accent); color: var(--muted); }
+
+/* CONSULT CTA */
+.consult-cta {
+  background: rgba(200,146,10,0.05);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 24px 28px;
+  margin-top: 32px;
+}
+.consult-cta-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); opacity: 0.7; margin-bottom: 8px; }
+.consult-cta-title { font-family: var(--head); font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 8px; }
+.consult-cta-sub { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+.consult-cta a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.consult-cta a:hover { text-decoration: underline; }
+
+/* GATE CARD */
+.gate-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  padding: 56px 44px;
+  text-align: center;
+  animation: fadeUp 0.4s ease both;
+}
+.gate-icon {
+  font-size: 32px; margin-bottom: 24px; opacity: 0.6;
+}
+.gate-title {
+  font-family: var(--head); font-size: 32px; font-weight: 400;
+  color: var(--text); margin-bottom: 12px;
+}
+.gate-sub {
+  font-size: 15px; color: var(--muted); line-height: 1.75;
+  max-width: 480px; margin: 0 auto 12px;
+}
+.gate-reset {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--dim); margin-bottom: 32px;
+}
+.gate-reset span { color: var(--accent); }
+.gate-divider {
+  height: 1px; background: var(--border2);
+  margin: 32px 0;
+}
+.gate-services {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-bottom: 32px; text-align: left;
+}
+.gate-service {
+  padding: 16px 18px;
+  background: var(--bg2); border: 1px solid var(--border2);
+}
+.gate-service-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--accent); opacity: 0.7;
+  margin-bottom: 6px;
+}
+.gate-service-name {
+  font-family: var(--head); font-size: 16px; color: var(--text);
+  margin-bottom: 4px;
+}
+.gate-service-desc {
+  font-size: 12px; color: var(--dim); line-height: 1.5;
+}
+
+/* ERROR */
+.error-msg { font-size: 12px; color: #e05c5c; margin-top: 4px; font-family: var(--mono); }
+
+/* TRANSPARENCY NOTE */
+.transparency {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
+  color: var(--dim); margin-top: 24px; line-height: 1.7;
+  padding-top: 16px; border-top: 1px solid var(--border2);
+}
+
+/* MOBILE */
+@media (max-width: 720px) {
+  .topnav-link { font-size: 9px; letter-spacing: 0; padding: 0 1px; }
+  .layout { padding: 32px 20px 64px; }
+  .form-card { padding: 28px 20px; }
+  .option-grid { grid-template-columns: 1fr; }
+  .option-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+  .email-grid { grid-template-columns: 1fr; }
+  .btn-row { flex-direction: column; align-items: stretch; }
+  .btn-primary, .btn-secondary { text-align: center; }
+  .step-line { max-width: 24px; }
+  .gate-services { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-row1">
+    <a href="/" class="topnav-logo">Velocity Solutions</a>
+    <a href="mailto:contact@velocitysolutions.build" class="topnav-contact">contact@velocitysolutions.build</a>
+  </div>
+  <div class="topnav-row2">
+    <a href="index.html" class="topnav-link">Analysis</a>
+    <a href="news.html" class="topnav-link">News</a>
+    <a href="market.html" class="topnav-link">Market Data</a>
+    <a href="services.html" class="topnav-link active">Services</a>
+    <a href="mailto:contact@velocitysolutions.build" class="topnav-link">Contact</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="page-eyebrow">Services · Find Your Stack</div>
+  <h1 class="page-title">Find the Right AI Tools for Your Business</h1>
+  <p class="page-sub">Answer five questions and get a ranked recommendation from our database of 50+ commercially available AI tools for specialty contractors and small GCs. Free. No obligation.</p>
+  <div class="title-rule"></div>
+
+  <div class="step-indicator">
+    <div class="step active" id="step-ind-1">
+      <div class="step-num">1</div>
+      <span>Questions</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-ind-2">
+      <div class="step-num">2</div>
+      <span>Contact</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-ind-3">
+      <div class="step-num">3</div>
+      <span>Results</span>
+    </div>
+  </div>
+
+  <div id="mainArea"></div>
+</div>
+
+<script>
+const WORKER_URL = 'https://velocity-ai-proxy.vsolutions-build.workers.dev';
+const RUN_LIMIT = 3;
+const WINDOW_DAYS = 30;
+
+let currentStep = 1;
+let answers = {};
+let emailData = {};
+let resultsData = null;
+let refinementsLeft = 3;
+let insightsData = null;
+let usageData = null; // { allowed, runsUsed, runsRemaining, windowResetDate }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('/insights.json?cb=' + Date.now());
+    insightsData = await res.json();
+  } catch(e) { insightsData = null; }
+  renderQuestions();
+});
+
+function setStep(n) {
+  currentStep = n;
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('step-ind-' + i);
+    el.classList.remove('active', 'complete');
+    if (i < n) el.classList.add('complete');
+    else if (i === n) el.classList.add('active');
+  }
+}
+
+// ── STEP 1: QUESTIONS ──
+function renderQuestions() {
+  setStep(1);
+  const area = document.getElementById('mainArea');
+  area.innerHTML = `
+    <div class="form-card">
+      <div class="form-section-label">Step 01 of 03</div>
+      <div class="form-section-title">Tell us about your operation</div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">01</span>What trade do you primarily work in?</div>
+        <div class="option-grid cols-3" id="q1">
+          ${['Masonry / Concrete','MEP (Mechanical, Electrical, Plumbing)','Roofing','Drywall / Framing','General Contractor','Painting','Other Specialty'].map(o => `
+            <button class="option-btn" onclick="selectSingle('q1', this, '${o}')">${o}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">02</span>How many PMs actively manage projects?</div>
+        <div class="option-grid" id="q2">
+          ${['1-3 PMs','4-10 PMs','11-20 PMs','20+ PMs'].map(o => `
+            <button class="option-btn" onclick="selectSingle('q2', this, '${o}')">${o}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">03</span>Where do you lose the most time? <span style="font-size:12px;color:var(--dim);">(select all that apply)</span></div>
+        <div class="option-grid" id="q3">
+          ${['Bidding & Estimating','Field Reporting','Submittals & RFIs','T&M Billing','Change Orders','Scheduling'].map(o => `
+            <button class="option-btn multi" onclick="selectMulti('q3', this, '${o}')">${o}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">04</span>What software do you currently use?</div>
+        <div class="option-grid cols-3" id="q4">
+          ${['None / Basic','Procore','Autodesk Build','Sage','QuickBooks','Other'].map(o => `
+            <button class="option-btn multi" onclick="selectMulti('q4', this, '${o}')">${o}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">05</span>What is your monthly budget for new tools?</div>
+        <div class="option-grid" id="q5">
+          ${['Under $200/mo','$200 - $500/mo','$500 - $2,000/mo','$2,000+/mo'].map(o => `
+            <button class="option-btn" onclick="selectSingle('q5', this, '${o}')">${o}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label"><span class="question-num">06</span>Anything else we should know? <span style="font-size:12px;color:var(--dim);">(optional)</span></div>
+        <textarea class="comments-area" id="q6" placeholder="e.g. We already tried Procore and it was too complex. We need something that works offline. We are focused on data center work..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="submitQuestions()">Continue to Contact Info</button>
+      </div>
+    </div>
+  `;
+}
+
+function selectSingle(groupId, btn, value) {
+  document.querySelectorAll(`#${groupId} .option-btn`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[groupId] = value;
+}
+
+function selectMulti(groupId, btn, value) {
+  btn.classList.toggle('selected');
+  if (!answers[groupId]) answers[groupId] = [];
+  if (btn.classList.contains('selected')) {
+    if (!answers[groupId].includes(value)) answers[groupId].push(value);
+  } else {
+    answers[groupId] = answers[groupId].filter(v => v !== value);
+  }
+}
+
+function submitQuestions() {
+  if (!answers.q1) { alert('Please select your trade.'); return; }
+  if (!answers.q2) { alert('Please select your team size.'); return; }
+  if (!answers.q3 || answers.q3.length === 0) { alert('Please select at least one area where you lose time.'); return; }
+  if (!answers.q5) { alert('Please select your monthly budget.'); return; }
+  answers.q6 = document.getElementById('q6').value.trim();
+  renderEmail();
+}
+
+// ── STEP 2: EMAIL ──
+function renderEmail() {
+  setStep(2);
+  const area = document.getElementById('mainArea');
+  area.innerHTML = `
+    <div class="form-card">
+      <div class="form-section-label">Step 02 of 03</div>
+      <div class="form-section-title">Where should we send your results?</div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:28px;">Your personalized tool recommendations will appear instantly below. We'll also keep you informed as new tools enter our database.</p>
+
+      <div class="email-grid">
+        <div class="input-wrap">
+          <label class="input-label" for="fname">First Name</label>
+          <input type="text" id="fname" class="text-input" placeholder="Dan">
+        </div>
+        <div class="input-wrap">
+          <label class="input-label" for="company">Company</label>
+          <input type="text" id="company" class="text-input" placeholder="Your Company">
+        </div>
+      </div>
+      <div class="input-wrap" style="margin-bottom:20px;">
+        <label class="input-label" for="email">Email Address</label>
+        <input type="email" id="email" class="text-input" placeholder="you@yourcompany.com">
+        <div class="error-msg" id="emailError" style="display:none;">Please enter a valid email address.</div>
+      </div>
+
+      <div class="consent-row">
+        <input type="checkbox" id="consent" class="consent-check">
+        <label for="consent" class="consent-label">I agree to receive occasional updates from Velocity Solutions about new AI tools, insights, and resources for specialty contractors. You can unsubscribe at any time.</label>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="submitEmailBtn" onclick="submitEmail()">Get My Recommendations</button>
+        <button class="btn-secondary" onclick="renderQuestions()">Back</button>
+      </div>
+
+      <div class="transparency">
+        Recommendations are generated by AI from our independent insights database. Some tools have affiliate relationships with this site. Neither affiliate relationships nor sponsorships influence what we recommend. We recommend what fits your situation.
+      </div>
+    </div>
+  `;
+}
+
+async function submitEmail() {
+  const fname = document.getElementById('fname').value.trim();
+  const company = document.getElementById('company').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const consent = document.getElementById('consent').checked;
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    document.getElementById('emailError').style.display = 'block';
+    document.getElementById('email').classList.add('error');
+    return;
+  }
+
+  emailData = { fname, company, email, consent };
+
+  // Disable button while checking
+  const btn = document.getElementById('submitEmailBtn');
+  btn.disabled = true;
+  btn.textContent = 'Checking...';
+
+  try {
+    const checkRes = await fetch(WORKER_URL + '/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    usageData = await checkRes.json();
+  } catch(e) {
+    // If check fails, allow through - don't block on a network error
+    usageData = { allowed: true, runsUsed: 1, runsRemaining: 2 };
+  }
+
+  if (!usageData.allowed) {
+    renderGate();
+    return;
+  }
+
+  getRecommendations();
+}
+
+// ── GATE: LIMIT REACHED ──
+function renderGate() {
+  setStep(3);
+  const area = document.getElementById('mainArea');
+
+  const resetDate = usageData.windowResetDate
+    ? new Date(usageData.windowResetDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    : 'in 30 days';
+
+  area.innerHTML = `
+    <div class="gate-card">
+      <div class="gate-icon">◈</div>
+      <div class="gate-title">You've Used Your Free Analyses</div>
+      <div class="gate-sub">You've run ${RUN_LIMIT} free stack analyses this month. Your limit resets on <strong style="color:var(--text);">${resetDate}</strong> - or book a consultation to get a deeper, custom analysis right now.</div>
+      <div class="gate-reset">Free analyses reset: <span>${resetDate}</span></div>
+
+      <div class="btn-row" style="justify-content:center;margin-bottom:32px;">
+        <a href="mailto:contact@velocitysolutions.build?subject=Consultation Request - Find Your Stack&body=Hi, I've completed the Find Your Stack tool and would like a deeper consultation. My email is ${emailData.email}." class="btn-primary" style="text-decoration:none;">Book a Consultation</a>
+      </div>
+
+      <div class="gate-divider"></div>
+
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);opacity:0.7;margin-bottom:16px;text-align:left;">What you get in a consultation</div>
+      <div class="gate-services">
+        <div class="gate-service">
+          <div class="gate-service-label">Audit</div>
+          <div class="gate-service-name">Current State Review</div>
+          <div class="gate-service-desc">We map your existing workflow and identify the highest-ROI automation opportunities.</div>
+        </div>
+        <div class="gate-service">
+          <div class="gate-service-label">Roadmap</div>
+          <div class="gate-service-name">Implementation Plan</div>
+          <div class="gate-service-desc">Prioritized tool list with rollout sequence, budget, and expected time savings per month.</div>
+        </div>
+        <div class="gate-service">
+          <div class="gate-service-label">Support</div>
+          <div class="gate-service-name">30-Day Follow-Up</div>
+          <div class="gate-service-desc">Check-in after implementation to adjust the plan based on what's working in the field.</div>
+        </div>
+      </div>
+
+      <div class="transparency">
+        Free analyses are limited to ${RUN_LIMIT} per 30-day period per email address to ensure quality and availability for all users.
+      </div>
+    </div>
+  `;
+}
+
+// ── STEP 3: RESULTS ──
+async function getRecommendations(refinement = null) {
+  setStep(3);
+  const area = document.getElementById('mainArea');
+  area.innerHTML = `
+    <div class="loading-card">
+      <div class="loading-spinner"></div>
+      <div class="loading-title">${refinement ? 'Updating your recommendations...' : 'Analyzing your situation...'}</div>
+      <div class="loading-sub">${refinement ? 'Applying your feedback' : 'Matching tools from our database of 50+ options'}</div>
+    </div>
+  `;
+
+  try {
+    const insightsContext = insightsData ? JSON.stringify(insightsData).substring(0, 8000) : 'No insights data available.';
+
+    const userContext = `
+Contractor Profile:
+- Trade: ${answers.q1}
+- Team size: ${answers.q2}
+- Biggest time drains: ${Array.isArray(answers.q3) ? answers.q3.join(', ') : answers.q3}
+- Current software: ${Array.isArray(answers.q4) ? answers.q4.join(', ') : (answers.q4 || 'Not specified')}
+- Monthly budget: ${answers.q5}
+- Additional context: ${answers.q6 || 'None provided'}
+${refinement ? `\nRefinement request: ${refinement}` : ''}
+`;
+
+    const systemPrompt = `You are an independent construction technology advisor for Velocity Solutions. You help specialty subcontractors and small general contractors find the right AI tools for their specific situation.
+
+You have access to an insights database of currently available AI tools for construction. Recommend tools based solely on fit for the user's specific situation. Never let affiliate or commercial relationships influence recommendations. If a tool is not a good fit, don't recommend it.
+
+Return your response as valid JSON only - no markdown, no explanation outside the JSON. Use this exact structure:
+{
+  "greeting": "One sentence personalized to their situation",
+  "categories": [
+    {
+      "category": "Category name matching their pain points",
+      "rationale": "One sentence explaining why this category matters for them",
+      "tools": [
+        {
+          "rank": 1,
+          "name": "Tool name",
+          "company": "Company name",
+          "pricing": "Specific pricing from database",
+          "why": "2-3 sentences explaining why this fits their specific situation - reference their trade, team size, budget",
+          "also_covers": ["Other category", "Another category"]
+        }
+      ]
+    }
+  ],
+  "summary": "2-3 sentence overall recommendation summarizing the best starting point and expected impact"
+}
+
+Rules:
+- Only include categories that match their stated pain points
+- Max 3 tools per category
+- If a tool appears in multiple categories, include it fully each time but populate also_covers with the other categories
+- Prioritize tools that fit within their stated budget
+- Be specific - reference their trade and situation in the why field
+- If they already use a platform (like Procore), prioritize tools that integrate with it
+- The most accessible/highest ROI tool should be rank 1`;
+
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 4000,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: `Here is the contractor's profile:\n${userContext}\n\nHere is the current insights database:\n${insightsContext}\n\nProvide ranked tool recommendations as JSON.`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    resultsData = JSON.parse(clean);
+    renderResults();
+
+  } catch(e) {
+    console.error('Recommendation error:', e);
+    document.getElementById('mainArea').innerHTML = `
+      <div class="form-card">
+        <div class="form-section-title">Something went wrong</div>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:12px;">Error: ${e.message}</p>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:24px;">We couldn't generate your recommendations right now. Please try again or contact us directly.</p>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="getRecommendations()">Try Again</button>
+          <a href="mailto:contact@velocitysolutions.build" class="btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">Contact Us</a>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function renderResults() {
+  const area = document.getElementById('mainArea');
+  const name = emailData.fname ? `, ${emailData.fname}` : '';
+
+  // Runs remaining badge
+  let runsBadge = '';
+  if (usageData) {
+    const remaining = usageData.runsRemaining;
+    if (remaining === 0) {
+      runsBadge = `<div class="runs-badge warning">This was your last free analysis this month</div>`;
+    } else if (remaining === 1) {
+      runsBadge = `<div class="runs-badge warning"><span>${remaining}</span> free analysis remaining this month</div>`;
+    } else {
+      runsBadge = `<div class="runs-badge"><span>${remaining}</span> free analyses remaining this month</div>`;
+    }
+  }
+
+  let categoriesHTML = '';
+  if (resultsData && resultsData.categories) {
+    resultsData.categories.forEach(cat => {
+      let toolsHTML = '';
+      cat.tools.forEach((tool, i) => {
+        const isTop = i === 0;
+        const alsoCovers = tool.also_covers && tool.also_covers.length > 0
+          ? `<div class="tool-also-covers"><span>Also covers:</span> ${tool.also_covers.join(' · ')}</div>`
+          : '';
+        toolsHTML += `
+          <div class="tool-rec-card ${isTop ? 'top-pick' : ''}">
+            <div class="tool-rank ${isTop ? 'tool-rank-top' : ''}">
+              ${isTop ? '★ Top Pick' : `Option ${i + 1}`}
+            </div>
+            <div class="tool-rec-name">${tool.name}</div>
+            <div class="tool-rec-company">${tool.company}</div>
+            <div class="tool-rec-pricing">${tool.pricing}</div>
+            <div class="tool-rec-why">${tool.why}</div>
+            ${alsoCovers}
+          </div>
+        `;
+      });
+
+      categoriesHTML += `
+        <div class="category-block">
+          <div class="category-header">
+            <div class="category-eyebrow">Category</div>
+            <div class="category-name">${cat.category}</div>
+            <div style="font-size:13px;color:var(--dim);margin-top:6px;">${cat.rationale}</div>
+          </div>
+          ${toolsHTML}
+        </div>
+      `;
+    });
+  }
+
+  const refineSection = refinementsLeft > 0 ? `
+    <div class="refine-card">
+      <div class="refine-label">Refine Your Results</div>
+      <div class="refine-title">Want to dial this in further?</div>
+      <div class="refinements-left">Refinements remaining: <span>${refinementsLeft}</span></div>
+      <div class="refine-examples">
+        <button class="refine-example" onclick="setRefineText('I already use Procore - show alternatives only')">Already using Procore</button>
+        <button class="refine-example" onclick="setRefineText('I need something that works offline in the field')">Need offline capability</button>
+        <button class="refine-example" onclick="setRefineText('Show me only tools under $200/month')">Tighter budget</button>
+        <button class="refine-example" onclick="setRefineText('Focus only on bidding and estimating tools')">Focus on estimating only</button>
+        <button class="refine-example" onclick="setRefineText('I tried Togal.AI and it was not a good fit')">Exclude a specific tool</button>
+      </div>
+      <textarea class="refine-input" id="refineInput" placeholder="Tell us what to change - exclude a tool, adjust budget, focus on one area, or add context about your situation..."></textarea>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="submitRefinement()">Update Recommendations</button>
+      </div>
+    </div>
+  ` : `
+    <div class="consult-cta">
+      <div class="consult-cta-label">Next Step</div>
+      <div class="consult-cta-title">Ready to go deeper?</div>
+      <div class="consult-cta-sub">You've used your refinement passes. For a detailed implementation roadmap specific to your operation - which tools to start with, how to roll them out, and what ROI to expect - book a consultation.</div>
+      <a href="mailto:contact@velocitysolutions.build?subject=Consultation Request - Find Your Stack">Book a Consultation →</a>
+    </div>
+  `;
+
+  area.innerHTML = `
+    ${runsBadge}
+
+    <div class="results-header">
+      <div class="results-title">Your Recommendations${name}</div>
+      <div class="results-sub">${resultsData.greeting || ''}</div>
+    </div>
+
+    ${categoriesHTML}
+
+    ${resultsData.summary ? `
+      <div style="background:rgba(200,146,10,0.04);border-left:3px solid var(--accent);padding:20px 24px;margin-bottom:32px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);opacity:0.7;margin-bottom:8px;">Summary</div>
+        <div style="font-size:15px;line-height:1.8;color:var(--muted);">${resultsData.summary}</div>
+      </div>
+    ` : ''}
+
+    ${refineSection}
+
+    <div class="transparency">
+      Recommendations generated from Velocity Solutions' independent insights database. Some tools have affiliate or sponsorship relationships with this site. These relationships do not influence rankings or recommendations.
+    </div>
+  `;
+}
+
+function setRefineText(text) {
+  document.getElementById('refineInput').value = text;
+}
+
+function submitRefinement() {
+  const text = document.getElementById('refineInput').value.trim();
+  if (!text) { alert('Please describe what you would like to change.'); return; }
+  refinementsLeft--;
+  getRecommendations(text);
+}
+</script>
+
+</body>
+</html>

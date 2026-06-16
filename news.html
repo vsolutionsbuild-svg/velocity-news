@@ -940,12 +940,12 @@ body::before {
   <div class="loading-state"><p>Loading...</p></div>
 </main>
 <div class="tweet-panel" id="tweetPanel">
-  <div class="tweet-panel-label">Share on X</div>
+  <div class="tweet-panel-label">Share on Social Media</div>
   <div class="tweet-box">
     <div class="tweet-date" id="tweetDate"></div>
     <div class="tweet-text" id="tweetText"></div>
     <div class="tweet-char-count" id="tweetCharCount"></div>
-    <button class="tweet-copy-btn" id="tweetCopyBtn" onclick="copyTweet()">Copy Tweet</button>
+    <button class="tweet-copy-btn" id="tweetCopyBtn" onclick="copyTweet()">Copy Post</button>
   </div>
 </div>
 </div>
@@ -1060,8 +1060,7 @@ function loadArticle(id) {
   const article = articles.find(a => a.id === id);
   if (!article) return;
   currentArticle = article;
-  updateTweetPanel(article);
-  stopAudio();
+stopAudio();
 
   document.querySelectorAll('.archive-item').forEach(el => el.classList.remove('active'));
   const archiveItem = document.getElementById('archive-' + id);
@@ -1095,9 +1094,9 @@ function loadArticle(id) {
     </div>
     <div class="tweet-mobile" id="tweetMobile" style="display:none;">
       <div class="tweet-mobile-label">Share on X</div>
-      <button class="tweet-mobile-toggle" id="tweetMobileToggle" onclick="toggleMobileTweet()">Show Tweet Draft</button>
+      <button class="tweet-mobile-toggle" id="tweetMobileToggle" onclick="toggleMobileTweet()">Show Post Draft</button>
       <div class="tweet-mobile-text" id="tweetMobileText"></div>
-      <button class="tweet-mobile-copy" id="tweetMobileCopy" onclick="copyMobileTweet()">Copy Tweet</button>
+      <button class="tweet-mobile-copy" id="tweetMobileCopy" onclick="copyMobileTweet()">Copy Post</button>
     </div>
     <div class="comments-section">
       <div class="comments-label">Discussion</div>
@@ -1110,8 +1109,8 @@ function loadArticle(id) {
   `;
 
   loadDisqus(article.id, article.title);
+  updateTweetPanel(article);
   document.getElementById('sidebar').classList.remove('open');
-  
   window.scrollTo(0, 0);
 }
 
@@ -1446,7 +1445,7 @@ function copyTweet() {
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copy Tweet'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => { btn.textContent = 'Copy Post'; btn.classList.remove('copied'); }, 2000);
   });
 }
 function toggleMobileTweet() {
@@ -1456,7 +1455,7 @@ function toggleMobileTweet() {
   const visible = text.style.display === 'block';
   text.style.display = visible ? 'none' : 'block';
   copy.style.display = visible ? 'none' : 'block';
-  btn.textContent = visible ? 'Show Tweet Draft' : 'Hide Tweet Draft';
+  btn.textContent = visible ? 'Show Post Draft' : 'Hide Post Draft';
 }
 function copyMobileTweet() {
   const text = document.getElementById('tweetMobileText').textContent;
@@ -1464,7 +1463,7 @@ function copyMobileTweet() {
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copy Tweet'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => { btn.textContent = 'Copy Post'; btn.classList.remove('copied'); }, 2000);
   });
 }
 </script>

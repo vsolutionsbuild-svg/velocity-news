@@ -854,6 +854,13 @@ body::before {
 .tweet-char-count { font-family: var(--mono); font-size: 8px; color: var(--dim); margin-top: 8px; text-align: right; }
 .main-and-tweet { flex: 1; display: flex; align-items: flex-start; min-width: 0; }
 @media (max-width: 1100px) { .tweet-panel { display: none !important; } }
+.tweet-mobile { display: none; margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px; }
+.tweet-mobile-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); opacity: 0.7; margin-bottom: 12px; }
+.tweet-mobile-text { font-size: 13px; line-height: 1.75; color: var(--text); margin-bottom: 12px; word-break: break-word; display: none; }
+.tweet-mobile-toggle { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); background: rgba(200,146,10,0.08); border: 1px solid var(--border); padding: 8px 16px; cursor: pointer; width: 100%; text-align: center; margin-bottom: 8px; }
+.tweet-mobile-copy { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); background: transparent; border: 1px solid var(--border); padding: 8px 16px; cursor: pointer; width: 100%; text-align: center; display: none; }
+.tweet-mobile-copy.copied { color: #5a9a5a; border-color: #5a9a5a; }
+@media (max-width: 1100px) { .tweet-mobile { display: block; } }
 </style>
 </head>
 <body>
@@ -1085,6 +1092,12 @@ function loadArticle(id) {
     <div class="article-rule"></div>
     <div class="article-body" id="articleBody">
       ${article.body.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('')}
+    </div>
+    <div class="tweet-mobile" id="tweetMobile" style="display:none;">
+      <div class="tweet-mobile-label">Share on X</div>
+      <button class="tweet-mobile-toggle" id="tweetMobileToggle" onclick="toggleMobileTweet()">Show Tweet Draft</button>
+      <div class="tweet-mobile-text" id="tweetMobileText"></div>
+      <button class="tweet-mobile-copy" id="tweetMobileCopy" onclick="copyMobileTweet()">Copy Tweet</button>
     </div>
     <div class="comments-section">
       <div class="comments-label">Discussion</div>
@@ -1417,10 +1430,37 @@ function updateTweetPanel(article) {
   } else {
     panel.style.display = 'none';
   }
+  const mobile = document.getElementById('tweetMobile');
+  if (mobile) {
+    if (article.tweet) {
+      document.getElementById('tweetMobileText').textContent = article.tweet;
+      mobile.style.display = 'block';
+    } else {
+      mobile.style.display = 'none';
+    }
+  }
 }
 function copyTweet() {
   const text = document.getElementById('tweetText').textContent;
   const btn = document.getElementById('tweetCopyBtn');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Tweet'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+function toggleMobileTweet() {
+  const text = document.getElementById('tweetMobileText');
+  const copy = document.getElementById('tweetMobileCopy');
+  const btn = document.getElementById('tweetMobileToggle');
+  const visible = text.style.display === 'block';
+  text.style.display = visible ? 'none' : 'block';
+  copy.style.display = visible ? 'none' : 'block';
+  btn.textContent = visible ? 'Show Tweet Draft' : 'Hide Tweet Draft';
+}
+function copyMobileTweet() {
+  const text = document.getElementById('tweetMobileText').textContent;
+  const btn = document.getElementById('tweetMobileCopy');
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = 'Copied!';
     btn.classList.add('copied');

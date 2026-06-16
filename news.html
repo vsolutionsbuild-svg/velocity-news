@@ -843,6 +843,17 @@ body::before {
   .main { margin-left: 0; padding: 28px 20px 64px; }
   .tool-meta { grid-template-columns: 1fr; }
 }
+.tweet-panel { width: 240px; flex-shrink: 0; position: sticky; top: 108px; align-self: flex-start; margin-left: 32px; display: none; }
+.tweet-panel-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); opacity: 0.7; margin-bottom: 12px; }
+.tweet-box { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 18px; }
+.tweet-text { font-size: 13px; line-height: 1.75; color: var(--text); margin-bottom: 16px; word-break: break-word; }
+.tweet-date { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--dim); margin-bottom: 12px; }
+.tweet-copy-btn { width: 100%; padding: 8px 12px; background: rgba(200,146,10,0.08); border: 1px solid var(--border); color: var(--accent); font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-align: center; }
+.tweet-copy-btn:hover { background: rgba(200,146,10,0.16); border-color: var(--accent); }
+.tweet-copy-btn.copied { color: #5a9a5a; border-color: #5a9a5a; }
+.tweet-char-count { font-family: var(--mono); font-size: 8px; color: var(--dim); margin-top: 8px; text-align: right; }
+.main-and-tweet { flex: 1; display: flex; align-items: flex-start; min-width: 0; }
+@media (max-width: 1100px) { .tweet-panel { display: none !important; } }
 </style>
 </head>
 <body>
@@ -917,12 +928,19 @@ body::before {
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="main" id="mainContent">
-    <div class="loading-state">
-      <p>Loading...</p>
-    </div>
-  </main>
-
+  <div class="main-and-tweet">
+<main class="main" id="mainContent">
+  <div class="loading-state"><p>Loading...</p></div>
+</main>
+<div class="tweet-panel" id="tweetPanel">
+  <div class="tweet-panel-label">Share on X</div>
+  <div class="tweet-box">
+    <div class="tweet-date" id="tweetDate"></div>
+    <div class="tweet-text" id="tweetText"></div>
+    <div class="tweet-char-count" id="tweetCharCount"></div>
+    <button class="tweet-copy-btn" id="tweetCopyBtn" onclick="copyTweet()">Copy Tweet</button>
+  </div>
+</div>
 </div>
 
 <!-- MODAL -->
@@ -1035,6 +1053,7 @@ function loadArticle(id) {
   const article = articles.find(a => a.id === id);
   if (!article) return;
   currentArticle = article;
+  updateTweetPanel(article);
   stopAudio();
 
   document.querySelectorAll('.archive-item').forEach(el => el.classList.remove('active'));
@@ -1388,6 +1407,26 @@ function showComingSoon(page) {
 }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeSpoken(); } });
+function updateTweetPanel(article) {
+  const panel = document.getElementById('tweetPanel');
+  if (article.tweet) {
+    document.getElementById('tweetText').textContent = article.tweet;
+    document.getElementById('tweetDate').textContent = article.date;
+    document.getElementById('tweetCharCount').textContent = article.tweet.length + ' / 280 characters';
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+}
+function copyTweet() {
+  const text = document.getElementById('tweetText').textContent;
+  const btn = document.getElementById('tweetCopyBtn');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Tweet'; btn.classList.remove('copied'); }, 2000);
+  });
+}
 </script>
 
 
